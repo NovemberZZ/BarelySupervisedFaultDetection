@@ -129,23 +129,23 @@ if ischar(filename_in)
     input_data = reshape(input_data, [128, 128, 128]);
     % ****************************************************************** %
     % ******************* check the permute order ********************** %
-%     input_data = permute(input_data, [3, 1, 2]);
+    input_data = permute(input_data, [3, 1, 2]);
     % ******************* check the permute order ********************** %
     % ****************************************************************** %
     
     % show in windows
     axes(handles.axes1);
     imagesc(input_data(:,:,64), [min(input_data(:))/threshold max(input_data(:))/threshold]);
-    colormap seismic; axis image; axis off;
+    colormap gray; axis image; axis off;
     axes(handles.axes2);
     imagesc(rot90(squeeze(input_data(64,:,:)),1), [min(input_data(:))/threshold max(input_data(:))/threshold]);
-    colormap seismic; axis image; axis off;
+    colormap gray; axis image; axis off;
     
     % reset previous label windows
     axes(handles.axes3);
-    imagesc(labels_1); colormap seismic;
+    imagesc(labels_1); colormap gray;
     axes(handles.axes4);
-    imagesc(labels_2); colormap seismic;
+    imagesc(labels_2); colormap gray;
     set(handles.axes3,'xTick',[]);
     set(handles.axes3,'ytick',[]);
     set(handles.axes3,'box','on');
@@ -217,7 +217,7 @@ labels_1 = imbinarize(labels_1);
 
 axes(handles.axes3)
 imagesc(labels_1);
-axis image; axis off; colormap seismic;
+axis image; axis off; colormap gray;
 
 handles.labels_1 = labels_1;
 guidata(hObject, handles);
@@ -294,7 +294,7 @@ labels_2 = imbinarize(labels_2);
 
 axes(handles.axes4)
 imagesc(labels_2);
-axis image; axis off; colormap seismic;
+axis image; axis off; colormap gray;
 
 handles.labels_2 = labels_2;
 guidata(hObject, handles);
@@ -351,10 +351,10 @@ else
     % refresh windows
     axes(handles.axes1);
     imagesc(input_data(:,:,64), [min(input_data(:))/threshold max(input_data(:))/threshold]);
-    colormap seismic; axis image; axis off;
+    colormap gray; axis image; axis off;
     axes(handles.axes2);
     imagesc(rot90(squeeze(input_data(64,:,:)),1), [min(input_data(:))/threshold max(input_data(:))/threshold]);
-    colormap seismic; axis image; axis off;
+    colormap gray; axis image; axis off;
 end
 
 handles.threshold = threshold;
