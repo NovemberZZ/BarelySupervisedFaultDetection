@@ -11,9 +11,11 @@ The orthogonal annotation tool is developed using MATLAB-GUI. If you have MATLAB
 
 If MATLAB is not installed on your computer, we also provide an executable (exe) version for Windows users. However, you will need to install the MATLAB Runtime environment first.
 
-![fig2](https://github.com/user-attachments/assets/4f5032d0-3a12-49e6-bf4f-e6b3d973539b)
+![fig2](https://github.com/user-attachments/assets/a4e0283f-d4eb-4685-a8af-983eaf6e8d9c)
 
-It should be noted that this tool is designed for orthogonal annotation of three-dimensional binary (.bin) seismic data. If you need to read data in other formats, you can modify lines 122 to 134 in "orthogonal_annotation_tool.m" to suit your specific requirements. In the Google Drive link, we provide the three-dimensional seismic samples clipped and preprocessed based on Poseidon, which you can directly use for orthogonal annotation.
+This tool is designed for orthogonal annotation of three-dimensional binary (.bin) seismic data. If you need to read data in other formats, you can modify lines 122 to 134 in "orthogonal_annotation_tool.m" to suit your specific requirements. In the Google Drive link, we provide the three-dimensional seismic samples clipped and preprocessed based on Poseidon, which you can directly use for orthogonal annotation.
+
+It should be noted that this tool has not undergone extensive and rigorous stability testing, and its functionality and implementation are relatively simple. You are welcome to modify it based on your specific requirements.
 
 # PART2：Registration (Registration_Module)
 
