@@ -12,18 +12,18 @@ from functions.window_function import get_padding_data_and_sliding_ind_3d
 print('Loading data...')
 
 # SEGY Data
-input_path = './Poseidon/Poseidon3D_part.sgy'
+input_path = './Poseidon3D_part.sgy'
 input_data = segy.readsegy(filename_in=input_path, inline_byte=9, xline_byte=21)
 
 input_data = np.rot90(input_data, 3, (0, 2))
 
 # ##################################################################################### #
-model_path = './checkpoints/Poseidon/comparison/200_seg1_d6_w5_lr1e_3_lambda1_epoch_100_50.pkl'
+model_path = ''
 # ##################################################################################### #
 overlap = 64
 # ##################################################################################### #
 save_data = True
-output_path = './Poseidon/Poseidon3D_part_out_comparison_Reg200_seg1_dipguided.sgy'
+output_path = ''
 # ##################################################################################### #
 show_result = False
 show_inline = 300

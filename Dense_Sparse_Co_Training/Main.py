@@ -7,6 +7,7 @@ from unet import UNet
 from itertools import cycle
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
+import monai
 
 # ************************************************** parameters ************************************************** #
 Epoch = 100
@@ -22,15 +23,15 @@ lamda_steps = Epoch
 
 
 # ************************************************ load datasets ************************************************* #
-dataset_1, dataset_2 = loaddata.loaddataset_F3()
+dataset_1, dataset_2 = loaddata.loaddataset_Poseidon()
 train_loader_1 = DataLoader(dataset=dataset_1, batch_size=batch_size_labeled, shuffle=True)
 train_loader_2 = DataLoader(dataset=dataset_2, batch_size=batch_size_unlabeled, shuffle=True)
 
 # ************************************************** load model ************************************************** #
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-seg_model1 = UNet(in_channels=1, n_classes=2, depth=Net_depth, wf=Net_wf, up_mode='upsample')
+seg_model1 = UNet(in_channels=1, n_classes=2, depth=Net_depth, wf=Net_wf, up_mode='upconv')
 seg_model1.to(device)
-seg_model2 = UNet(in_channels=1, n_classes=2, depth=Net_depth, wf=Net_wf, up_mode='upsample')
+seg_model2 = UNet(in_channels=1, n_classes=2, depth=Net_depth, wf=Net_wf, up_mode='upconv')
 seg_model2.to(device)
 
 # ************************************************* optimizer **************************************************** #
@@ -57,11 +58,16 @@ for epoch in range(Epoch):
         preds = seg_model1(data_labeled.to(device))
         weight = weights.load_weight_inline(
             weights.get_current_coefficient((iter_num / (max_iterations / weight_map_steps)), weight_map_steps))
+        # 动态权重消融实验4-1
+        # weight = torch.ones_like(preds).cuda()
         loss_seg_ce1 = losses.wce(preds, label_i.to(device), weight, batch_size_labeled, 128, 128, 128)
 
         preds = F.softmax(preds, dim=1)
+
+        # 动态权重消融实验4-2
         loss_seg_dice1 = losses.dice_loss_weight(torch.unsqueeze(preds[:, 1, :, :, :], 1), label_i.to(device),
                                                  torch.unsqueeze(torch.unsqueeze(weight[0, 0, :, :, :], 0), 0))
+
         supervised_loss1 = 0.5 * loss_seg_ce1 + 0.5 * loss_seg_dice1
 
         # ************************************ propagate unlabeled data ****************************************** #
@@ -96,11 +102,16 @@ for epoch in range(Epoch):
         preds = seg_model2(data_labeled.to(device))
         weight = weights.load_weight_timeslice(
             weights.get_current_coefficient((iter_num / (max_iterations / weight_map_steps)), weight_map_steps))
+        # 动态权重消融实验4-3
+        # weight = torch.ones_like(preds).cuda()
         loss_seg_ce2 = losses.wce(preds, label_t.to(device), weight, batch_size_labeled, 128, 128, 128)
 
         preds = F.softmax(preds, dim=1)
+
+        # 动态权重消融实验4-4
         loss_seg_dice2 = losses.dice_loss_weight(torch.unsqueeze(preds[:, 1, :, :, :], 1), label_t.to(device),
                                                  torch.unsqueeze(torch.unsqueeze(weight[0, 0, :, :, :], 0), 0))
+
         supervised_loss2 = 0.5 * loss_seg_ce2 + 0.5 * loss_seg_dice2
 
         # ************************************ propagate unlabeled data ****************************************** #
@@ -154,6 +165,6 @@ for epoch in range(Epoch):
 
     if (epoch + 1) % 5 == 0:
         torch.save(seg_model1.state_dict(),
-                   './checkpoints/F3Data/aug_seg1_d6_w5_lr1e_3_lambda1_epoch_' + str(Epoch) + '_' + str(epoch + 1) + '.pkl')
+                   './checkpoints/seg1_d6_w5_lr1e_3_lambda1_epoch_' + str(Epoch) + '_' + str(epoch + 1) + '.pkl')
         torch.save(seg_model2.state_dict(),
-                   './checkpoints/F3Data/aug_seg2_d6_w5_lr1e_3_lambda1_epoch_' + str(Epoch) + '_' + str(epoch + 1) + '.pkl')
+                   './checkpoints/seg2_d6_w5_lr1e_3_lambda1_epoch_' + str(Epoch) + '_' + str(epoch + 1) + '.pkl')
