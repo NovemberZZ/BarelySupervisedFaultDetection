@@ -129,7 +129,7 @@ if ischar(filename_in)
     input_data = reshape(input_data, [128, 128, 128]);
     % ****************************************************************** %
     % ******************* check the permute order ********************** %
-    input_data = permute(input_data, [3, 1, 2]);
+    % input_data = permute(input_data, [3, 1, 2]);
     % ******************* check the permute order ********************** %
     % ****************************************************************** %
     
